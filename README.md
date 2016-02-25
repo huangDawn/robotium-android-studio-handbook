@@ -61,6 +61,8 @@ robotium要求测试app和被测试app需要有相同的签名，才能保证测
 
 ### 修改build.gradle文件
 
+* 进入app module的build.gradle文件
+
  ![screenshot](https://raw.githubusercontent.com/hcnode/robotium-android-studio-handbook/master/screenshot/screenshot4.png)
  
 * build.gradle文件中，dependencies增加robotium依赖包：
@@ -81,7 +83,7 @@ robotium要求测试app和被测试app需要有相同的签名，才能保证测
  
  其中如果在project模式下会在build目录下找到AndroidTest的buildConfig文件，打开可以看到有package com.netease.mail.oneduobaohydrid.test ：
 
-![screenshot](https://raw.githubusercontent.com/hcnode/robotium-android-studio-handbook/master/screenshot/screenshot8.png)
+ ![screenshot](https://raw.githubusercontent.com/hcnode/robotium-android-studio-handbook/master/screenshot/screenshot8.png)
 
  修改.gradle文件后需要同步：
 
