@@ -14,7 +14,7 @@ Android studio 下robotium框架搭建（MAC版）
 * Android SDK
 * Gradle 最新版（方便shell进行gradle命令行打包）
 
-## 重签名被测试应用[1]
+## 重签名被测试应用
 ### 重签名步骤
 
 robotium要求测试app和被测试app需要有相同的签名，才能保证测试脚本的运行。所以我们要先对被测试app进行重签名。
@@ -271,7 +271,7 @@ http://mqc.aliyun.com
 
 ![screenshot](https://raw.githubusercontent.com/hcnode/robotium-android-studio-handbook/master/screenshot/screenshot23.png)
 
-参考资料：
+## 参考资料
 * 为方便Robotium自动测试需要对apk用本地安卓sdk中的debug.keystore进行重新签名： http://stephen830.iteye.com/blog/2079101 
 * Robotium with Android studio :
 http://stackoverflow.com/questions/23275602/robotium-with-android-studio/23295849  
