@@ -17,7 +17,9 @@ Android studio 下robotium框架搭建（MAC版）
 ## 重签名被测试应用[1]
 ### 重签名步骤
 
-robotium要求测试app和被测试app需要有相同的签名，才能保证测试脚本的运行。所以我们要先对被测试app进行重签名。对于没有任何签名信息的apk，这里可以默认使用.Android下的debug.keystore来重新签名apk。步骤如下：
+robotium要求测试app和被测试app需要有相同的签名，才能保证测试脚本的运行。所以我们要先对被测试app进行重签名。
+
+对于没有任何签名信息的apk，这里可以默认使用.Android下的debug.keystore来重新签名apk。步骤如下：
 
 * 查看apk的签名信息。使用java的jarsigner来查看apk是否签名。在终端输入：
 `jarsigner -verify -verbose –certs  /Users/***/test.apk`
@@ -27,10 +29,14 @@ robotium要求测试app和被测试app需要有相同的签名，才能保证测
  
 * 针对上面已签名的apk，删除apk的签名信息：将test.apk改名为test.zip包后，打开压缩包，把META-INF目录下的所有文件删除后，重新压缩文件。把test.zip文件改名成test.apk。再次查看test.apk的签名信息，会发现apk未签名。
 * 对apk重新签名。在终端输入命令：
+
 `jarsigner  -verbose –sigalg SHA1withRSA -digestalg SHA1 -keystore debug.keystore -storepass "android"  -keypass “android” -signedjar 签名后.apk 源.apk androiddebugkey`
+
 注意在JDK1.7环境下必须加上 `–sigalg SHA1withRSA -digestalg SHA1`
 其中debug.keystore为系统.Android下的默认keystore，改密钥为ADT默认使用的签名工具。其alias 是androiddebugkey，-storepass为android ，-keypass为 android
+
 * 使用zipalign工具修正刚签名的apk包，使apk文件中未压缩的数据在4个字节边界上对齐（4个字节是一个性能很好的值）。工具位置为android sdk的tools目录中。进入该目录后执行命令：
+  
   `./zipalign -v 4 源.apk 重命名.apk`
 
 除了以上方法也可以使用被测试app原有的签名文件，对测试app进行签名。
