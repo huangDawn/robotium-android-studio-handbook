@@ -42,9 +42,13 @@ robotium要求测试app和被测试app需要有相同的签名，才能保证测
 除了以上方法也可以使用被测试app原有的签名文件，对测试app进行签名。
 
 以下是robotium官方文档关于签名的说明:
+
 > Important Steps:
+
 > 1.If you know the certificate signature then use the same signature in test project
+
 > 2.If you do not know the certificate signature then delete the certificate signature and use the same androiddebug key signature in both the application and the test project
+
 > 3.If the application is unsigned then sign the application apk with the android debug key
 
 ### 脚本实现自动化重签名
