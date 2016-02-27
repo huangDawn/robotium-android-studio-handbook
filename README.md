@@ -1,6 +1,6 @@
 Android studio 下robotium框架搭建（MAC版）
 ## 前言
-本文档介绍MAC系统下Android studio 的基于robotium搭建的自动化测试框架，比起eclipse, 使用android studio更加便捷快速。
+本文档介绍MAC系统下Android studio 的基于robotium搭建的自动化测试框架，比起eclipse， 使用android studio更加便捷快速。
 
 ## 环境要求：
 * Java 运行组件环境 (JRE) 6
@@ -52,7 +52,7 @@ robotium要求测试app和被测试app需要有相同的签名，才能保证测
 > 3.If the application is unsigned then sign the application apk with the android debug key
 
 ### 脚本实现自动化重签名
-可以通过一段shell脚本实现app的重签名,而不需要手动一步步的去操作,将本地的debug.keystore(默认是在~/.android/debug.keystore路径下)与脚本放在同一个目录下，执行shell 脚本后生成apk包。（shell脚本请联系我索取）
+可以通过一段shell脚本实现app的重签名，而不需要手动一步步的去操作，将本地的debug.keystore(默认是在~/.android/debug.keystore路径下)与脚本放在同一个目录下，执行shell 脚本后生成apk包。（shell脚本请联系我索取）
 
 ## 创建Android studio 测试工程
 ### 创建测试工程
@@ -84,7 +84,7 @@ robotium要求测试app和被测试app需要有相同的签名，才能保证测
  ```
  或者将robotium 的jar包复制到工程的libs目录下，右键点击jar包选择add as library
 
-* 添加一个gradle任务,在测试工程debug build时候复制被测试的apk到项目的 build/outputs/apk/目录下,并且加入到assembleDebug任务的依赖：
+* 添加一个gradle任务，在测试工程debug build时候复制被测试的apk到项目的 build/outputs/apk/目录下，并且加入到assembleDebug任务的依赖：
  
  ```gradle
      task copyTask(type: Copy) {
@@ -264,7 +264,7 @@ com.netease.mail.oneduobaohydrid:id/tab_wrapper4  可知“我的”控件的Id�
 
 
 ## 运行测试用例（studio 模式及adb shell模式）
-android studio 下直接对AndroidTest进行run,前面已经介绍过了
+android studio 下直接对AndroidTest进行run，前面已经介绍过了
 ### adb shell模式下进行robotium自动化测试[3]：
 * **先查看连接的安卓机**：
 
