@@ -265,7 +265,7 @@ com.netease.mail.oneduobaohydrid:id/tab_wrapper4  可知“我的”控件的Id�
 
 ## 运行测试用例（studio 模式及adb shell模式）
 android studio 下直接对AndroidTest进行run，前面已经介绍过了
-### adb shell模式下进行robotium自动化测试[3]：
+### adb shell模式下进行robotium自动化测试：
 * **先查看连接的安卓机**：
 
  ```bash
