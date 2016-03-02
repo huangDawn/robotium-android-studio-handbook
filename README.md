@@ -23,7 +23,7 @@ robotium要求测试app和被测试app需要有相同的签名，才能保证测
 
  下面的结果是已经签名了：
 
- ![screenshot1](https://raw.githubusercontent.com/hcnode/robotium-android-studio-handbook/master/screenshot/screenshot24.png)
+ ![screenshot1](https://raw.githubusercontent.com/huangDawn/robotium-android-studio-handbook/master/screenshot/screenshot24.png)
  
 * 针对上面已签名的apk，删除apk的签名信息：将test.apk改名为test.zip包后，打开压缩包，把META-INF目录下的所有文件删除后，重新压缩文件。把test.zip文件改名成test.apk。再次查看test.apk的签名信息，会发现apk未签名。
 
@@ -59,21 +59,21 @@ robotium要求测试app和被测试app需要有相同的签名，才能保证测
 * 打开Android studio ，新建一个new project：输入application name和包名，选择存放路径后，下一步。
  **注意**: 包名必须和被测试apk的包名一致，如被测试包名是com.calculator， TestProject的名字最好为com.calculator，因为android studio build的时候会生成一个测试包com.calculator.test，这个包是用来识别为测试程序的
 
- ![screenshot](https://raw.githubusercontent.com/hcnode/robotium-android-studio-handbook/master/screenshot/screenshot1.png)
+ ![screenshot](https://raw.githubusercontent.com/huangDawn/robotium-android-studio-handbook/master/screenshot/screenshot1.png)
 
 * 设置安卓的最小SDK版本，点击下一步：
 
- ![screenshot](https://raw.githubusercontent.com/hcnode/robotium-android-studio-handbook/master/screenshot/screenshot2.png)
+ ![screenshot](https://raw.githubusercontent.com/huangDawn/robotium-android-studio-handbook/master/screenshot/screenshot2.png)
 
 * 因为这里是新建一个test工程，可以不用需要activity和界面。所以选择no activity后点击完成。一个基本的android studio项目已经完成，项目主要是通过gradle来构建apk的：
 
- ![screenshot](https://raw.githubusercontent.com/hcnode/robotium-android-studio-handbook/master/screenshot/screenshot3.png)
+ ![screenshot](https://raw.githubusercontent.com/huangDawn/robotium-android-studio-handbook/master/screenshot/screenshot3.png)
 
 ### 修改build.gradle文件
 
 * 进入app module的build.gradle文件
 
- ![screenshot](https://raw.githubusercontent.com/hcnode/robotium-android-studio-handbook/master/screenshot/screenshot4.png)
+ ![screenshot](https://raw.githubusercontent.com/huangDawn/robotium-android-studio-handbook/master/screenshot/screenshot4.png)
  
 * build.gradle文件中，dependencies增加robotium依赖包：
 
@@ -112,7 +112,7 @@ robotium要求测试app和被测试app需要有相同的签名，才能保证测
  
  修改.gradle文件后需要同步：
 
- ![screenshot](https://raw.githubusercontent.com/hcnode/robotium-android-studio-handbook/master/screenshot/screenshot9.png)
+ ![screenshot](https://raw.githubusercontent.com/huangDawn/robotium-android-studio-handbook/master/screenshot/screenshot9.png)
  
 * 运行robotium的测试用例
 
@@ -124,30 +124,30 @@ robotium要求测试app和被测试app需要有相同的签名，才能保证测
 
  对androidTest下的ApplicationTest类，右键 Create Test
 
- ![screenshot](https://raw.githubusercontent.com/hcnode/robotium-android-studio-handbook/master/screenshot/screenshot10.png)
+ ![screenshot](https://raw.githubusercontent.com/huangDawn/robotium-android-studio-handbook/master/screenshot/screenshot10.png)
  
  选择module/package和test方式
  
  instrumentation选择android.test.ActivityInstrumentationTestCase2
 
- ![screenshot](https://raw.githubusercontent.com/hcnode/robotium-android-studio-handbook/master/screenshot/screenshot11.png)
+ ![screenshot](https://raw.githubusercontent.com/huangDawn/robotium-android-studio-handbook/master/screenshot/screenshot11.png)
 
 ### 测试工程签名
 * 为保证被测试app和测试app有相同的签名（robotium要求测试包与被测试包需同样签名才能进行测试），可以在studio里面进行debug版本和release版本的签名配置。对测试的module右键，打开module配置后输入自己的key，密码等信息：
 
-  ![screenshot](https://raw.githubusercontent.com/hcnode/robotium-android-studio-handbook/master/screenshot/screenshot12.png)
+  ![screenshot](https://raw.githubusercontent.com/huangDawn/robotium-android-studio-handbook/master/screenshot/screenshot12.png)
   
-  ![screenshot](https://raw.githubusercontent.com/hcnode/robotium-android-studio-handbook/master/screenshot/screenshot13.png)
+  ![screenshot](https://raw.githubusercontent.com/huangDawn/robotium-android-studio-handbook/master/screenshot/screenshot13.png)
   
 * 在Build Types中，debug选择刚刚配置的key后保存。
 
- ![screenshot](https://raw.githubusercontent.com/hcnode/robotium-android-studio-handbook/master/screenshot/screenshot14.png)
+ ![screenshot](https://raw.githubusercontent.com/huangDawn/robotium-android-studio-handbook/master/screenshot/screenshot14.png)
  
  这样能够保证测试app与被测试app有一致的签名。
  
 * 连接好真机或模拟器后，这时候直接run测试app，看看环境是否搭建成功。
  
- ![screenshot](https://raw.githubusercontent.com/hcnode/robotium-android-studio-handbook/master/screenshot/screenshot15.png)
+ ![screenshot](https://raw.githubusercontent.com/huangDawn/robotium-android-studio-handbook/master/screenshot/screenshot15.png)
 
 ### 编写测试用例
 在test类下编辑测试用例，下面为一元夺宝简单的登陆退出操作。具体使用可参照robotium API
@@ -260,7 +260,7 @@ robotium的自动化测试可以巧用junit进行用例编写，这里不详细�
 如下图是打开Monitor的界面，左边栏显示的时已连接设备的信息， 右侧显示截屏后定位到的元素信息：
 com.netease.mail.oneduobaohydrid:id/tab_wrapper4  可知“我的”控件的Id值为tab_wrapper4
 
- ![screenshot](https://raw.githubusercontent.com/hcnode/robotium-android-studio-handbook/master/screenshot/screenshot16.png)
+ ![screenshot](https://raw.githubusercontent.com/huangDawn/robotium-android-studio-handbook/master/screenshot/screenshot16.png)
 
 
 ## 运行测试用例（studio 模式及adb shell模式）
@@ -320,7 +320,7 @@ android studio 下直接对AndroidTest进行run，前面已经介绍过了
 http://mqc.aliyun.com
 部分运行截图：
 
-![screenshot](https://raw.githubusercontent.com/hcnode/robotium-android-studio-handbook/master/screenshot/screenshot23.png)
+![screenshot](https://raw.githubusercontent.com/huangDawn/robotium-android-studio-handbook/master/screenshot/screenshot23.png)
 
 ## 参考资料
 * 为方便Robotium自动测试需要对apk用本地安卓sdk中的debug.keystore进行重新签名： http://stephen830.iteye.com/blog/2079101 
