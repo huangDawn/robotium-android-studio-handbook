@@ -1,11 +1,6 @@
 Android studio 下robotium框架搭建（MAC版）
 ## 前言
-本文档介绍MAC系统下Android studio 的robotium框架搭建，比eclipse便捷快速。环境要求java1.7以上，sdk，gradle，android studio（最好最新版本）。
-在windows下studio要求配置比较高，也可尝试。
-
-## 推荐配置
-* Mac® OS X® 10.8.5 或更高版本
-* 内存： 2GB RAM以上，推荐：4GB RAM
+本文档介绍MAC系统下Android studio 的基于robotium搭建的自动化测试框架，比起eclipse， 使用android studio更加便捷快速。
 
 ## 环境要求：
 * Java 运行组件环境 (JRE) 6
@@ -15,6 +10,7 @@ Android studio 下robotium框架搭建（MAC版）
 * Gradle 最新版（方便shell进行gradle命令行打包）
 
 ## 重签名被测试应用
+
 ### 重签名步骤
 
 robotium要求测试app和被测试app需要有相同的签名，才能保证测试脚本的运行。所以我们要先对被测试app进行重签名。
@@ -23,18 +19,21 @@ robotium要求测试app和被测试app需要有相同的签名，才能保证测
 
 * 查看apk的签名信息。使用java的jarsigner来查看apk是否签名。
 
-在终端输入：`jarsigner -verify -verbose –certs  /Users/***/test.apk`下面的结果是已经签名了：
+ 在终端输入：`jarsigner -verify -verbose –certs  /Users/***/test.apk` 
+
+ 下面的结果是已经签名了：
 
  ![screenshot1](https://raw.githubusercontent.com/hcnode/robotium-android-studio-handbook/master/screenshot/screenshot24.png)
  
 * 针对上面已签名的apk，删除apk的签名信息：将test.apk改名为test.zip包后，打开压缩包，把META-INF目录下的所有文件删除后，重新压缩文件。把test.zip文件改名成test.apk。再次查看test.apk的签名信息，会发现apk未签名。
+
 * 对apk重新签名。在终端输入命令：
 
  `jarsigner  -verbose –sigalg SHA1withRSA -digestalg SHA1 -keystore debug.keystore -storepass "android"  -keypass “android” -signedjar 签名后.apk 源.apk androiddebugkey`
 
  注意在JDK1.7环境下必须加上 `–sigalg SHA1withRSA -digestalg SHA1`
  
- 其中debug.keystore为系统.Android下的默认keystore，改密钥为ADT默认使用的签名工具。其alias 是androiddebugkey，-storepass为android ，-keypass为 android
+ 其中debug.keystore为系统.Android下的默认keystore，该密钥为android app默认使用的debug签名工具。其alias 是androiddebugkey，-storepass为android ，-keypass为 android
 
 * 使用zipalign工具修正刚签名的apk包，使apk文件中未压缩的数据在4个字节边界上对齐（4个字节是一个性能很好的值）。工具位置为android sdk的tools目录中。进入该目录后执行命令：
   
@@ -42,12 +41,23 @@ robotium要求测试app和被测试app需要有相同的签名，才能保证测
 
 除了以上方法也可以使用被测试app原有的签名文件，对测试app进行签名。
 
-### 脚本实现自动化签名
-下载重签名需要的shell文件，将本地的debug.keystore(默认是在XX/.android/debug.keystore路径下)与脚本放在同一个目录下，执行shell 脚本后生成apk包。（shell脚本请联系我）
+以下是robotium官方文档关于签名的说明:
+
+> Important Steps:
+
+> 1.If you know the certificate signature then use the same signature in test project
+
+> 2.If you do not know the certificate signature then delete the certificate signature and use the same androiddebug key signature in both the application and the test project
+
+> 3.If the application is unsigned then sign the application apk with the android debug key
+
+### 脚本实现自动化重签名
+可以通过一段shell脚本实现app的重签名，而不需要手动一步步的去操作，将本地的debug.keystore(默认是在~/.android/debug.keystore路径下)与脚本放在同一个目录下，执行shell 脚本后生成apk包。（shell脚本请联系我索取）
 
 ## 创建Android studio 测试工程
 ### 创建测试工程
-* 打开Android studio ，新建一个new project：输入application name和包名，选择存放路径后，下一步。（包名最好和被测试apk的包名一致，如被测试包名是com.calculator， TestProject的名字最好为com.calculator，因为android studio build的时候会生成一个测试包com.calculator.test，这个包是用来识别为测试程序的）
+* 打开Android studio ，新建一个new project：输入application name和包名，选择存放路径后，下一步。
+ **注意**: 包名必须和被测试apk的包名一致，如被测试包名是com.calculator， TestProject的名字最好为com.calculator，因为android studio build的时候会生成一个测试包com.calculator.test，这个包是用来识别为测试程序的
 
  ![screenshot](https://raw.githubusercontent.com/hcnode/robotium-android-studio-handbook/master/screenshot/screenshot1.png)
 
@@ -67,29 +77,46 @@ robotium要求测试app和被测试app需要有相同的签名，才能保证测
  
 * build.gradle文件中，dependencies增加robotium依赖包：
 
- ![screenshot](https://raw.githubusercontent.com/hcnode/robotium-android-studio-handbook/master/screenshot/screenshot5.png)
- 
+ ```gradle
+     dependencies {
+         androidTestCompile 'com.jayway.android.robotium:robotium-solo:5.5.4'
+     }
+ ```
  或者将robotium 的jar包复制到工程的libs目录下，右键点击jar包选择add as library
 
-* 添加被测试包，并移动到项目的 build/outputs/apk/目录下：
-
- ![screenshot](https://raw.githubusercontent.com/hcnode/robotium-android-studio-handbook/master/screenshot/screenshot6.png)
+* 添加一个gradle任务，在测试工程debug build时候复制被测试的apk到项目的 build/outputs/apk/目录下，并且加入到assembleDebug任务的依赖：
  
+ ```gradle
+     task copyTask(type: Copy) {
+         from '/path/to/com.netease.qa.testdemo.apk'
+         into 'build/outputs/apk/'
+         rename {
+             'com.netease.qa.testdemo.apk'
+         }
+     }
+     assembleDebug.dependsOn copyTask
+ ```
+
 * 修改applicationId为被测试app的包名（如果新建的测试包名不和被测试包名一致，则执行这一步）：
 
- ![screenshot](https://raw.githubusercontent.com/hcnode/robotium-android-studio-handbook/master/screenshot/screenshot7.png)
- 
- 否则，会出现找不instrumentation的目标包。
- 
- 其中如果在project模式下会在build目录下找到AndroidTest的buildConfig文件，打开可以看到有package com.netease.mail.oneduobaohydrid.test ：
+ ```
+    defaultConfig {
+        applicationId "com.netease.qa.testdemo"
+        minSdkVersion 23
+        targetSdkVersion 23
+        versionName "1.0"
+    }
+ ```
 
- ![screenshot](https://raw.githubusercontent.com/hcnode/robotium-android-studio-handbook/master/screenshot/screenshot8.png)
-
+ 如果包名不一致，会出现找不instrumentation的目标包。
+ 
  修改.gradle文件后需要同步：
 
  ![screenshot](https://raw.githubusercontent.com/hcnode/robotium-android-studio-handbook/master/screenshot/screenshot9.png)
  
-* 新建的project会有主源代码和测试代码。它们分别在：
+* 运行robotium的测试用例
+
+ 新建的project会有主源代码和测试代码。它们分别在：
 
  `src/main/`
 
@@ -105,17 +132,19 @@ robotium要求测试app和被测试app需要有相同的签名，才能保证测
 
  ![screenshot](https://raw.githubusercontent.com/hcnode/robotium-android-studio-handbook/master/screenshot/screenshot11.png)
 
-### 签名测试版本
+### 测试工程签名
 * 为保证被测试app和测试app有相同的签名（robotium要求测试包与被测试包需同样签名才能进行测试），可以在studio里面进行debug版本和release版本的签名配置。对测试的module右键，打开module配置后输入自己的key，密码等信息：
 
   ![screenshot](https://raw.githubusercontent.com/hcnode/robotium-android-studio-handbook/master/screenshot/screenshot12.png)
   
   ![screenshot](https://raw.githubusercontent.com/hcnode/robotium-android-studio-handbook/master/screenshot/screenshot13.png)
+  
 * 在Build Types中，debug选择刚刚配置的key后保存。
 
  ![screenshot](https://raw.githubusercontent.com/hcnode/robotium-android-studio-handbook/master/screenshot/screenshot14.png)
  
  这样能够保证测试app与被测试app有一致的签名。
+ 
 * 连接好真机或模拟器后，这时候直接run测试app，看看环境是否搭建成功。
  
  ![screenshot](https://raw.githubusercontent.com/hcnode/robotium-android-studio-handbook/master/screenshot/screenshot15.png)
@@ -126,9 +155,7 @@ robotium要求测试app和被测试app需要有相同的签名，才能保证测
 ```java
 
 package com.netease.mail.testoneduobaohydrid; 
- 
 import android.test.ActivityInstrumentationTestCase2; 
- 
 import com.robotium.solo.Solo; 
  
 /** 
@@ -170,8 +197,6 @@ public class ApplicationTest extends ActivityInstrumentationTestCase2 {
         //Wait for activity: 'com.netease.mail.oneduobaohydrid.activity.LaunchActivity' 
         solo.waitForActivity("LaunchActivity"， 2000); 
         if(solo.waitForActivity("IntroActivity")) { 
- 
- 
             assertTrue("IntroActivity is not found!"， solo.waitForActivity("IntroActivity")); 
             //Sleep for 167251 milliseconds 
             solo.sleep(2000); 
@@ -239,30 +264,56 @@ com.netease.mail.oneduobaohydrid:id/tab_wrapper4  可知“我的”控件的Id�
 
 
 ## 运行测试用例（studio 模式及adb shell模式）
-### android studio 下直接对AndroidTest进行run；
-### adb shell模式下进行robotium自动化测试[3]：
+android studio 下直接对AndroidTest进行run，前面已经介绍过了
+### adb shell模式下进行robotium自动化测试：
 * **先查看连接的安卓机**：
 
- ![screenshot](https://raw.githubusercontent.com/hcnode/robotium-android-studio-handbook/master/screenshot/screenshot17.png)
+ ```bash
+ DawndeMacBook-Por:~ Dawn$ adb devices
+ List of devices attached
+ HC4AXMZ01269	device
+ ```
 
 * **安装测试app**：
 
-  ![screenshot](https://raw.githubusercontent.com/hcnode/robotium-android-studio-handbook/master/screenshot/screenshot18.png)
+  ```bash
+  DawndeMacBook-Por:~ Dawn$ adb install /Users/Dawn/TestDemo/app/build/outputs/apk/app-debug-androidTest-unaligned.apk
+  1230 KB/s (67244 bytes in 0.053s)
+  		pkg: /data/local/tmp/app-debug-androidTest-unaligned.apk
+  Success
+  ```
 
 * **安装被测试app**:
 
- ![screenshot](https://raw.githubusercontent.com/hcnode/robotium-android-studio-handbook/master/screenshot/screenshot20.png)
+ ```bash
+ DawndeMacBook-Por:~ Dawn$ adb install /Users/Dawn/TestDemo/app/build/outputs/apk/app-debug.apk
+ 2307 KB/s (1148386 bytes in 0.485s)
+ 		pkg: /data/local/tmp/app-debug.apk
+ Success
+ ```
  
 * **使用下面adb明天查看手机project包名对应的instrumentation后，找到我们测试的project包名**：
    `adb shell pm list instrumentation`
    
- ![screenshot](https://raw.githubusercontent.com/hcnode/robotium-android-studio-handbook/master/screenshot/screenshot21.png)
+ ```bash
+ DawndeMacBook-Por:~ Dawn$ adb shell pm list instrumentation
+ instrumentation:com.futuredial/android.test.InstrumentationTestRunner(target=com.futuredial)
+ instrumentation:com.netease.mail.onduobaohydrid.test/android.test.InstrumentationTestRunner (target=com.netease.mail.oneduobaodrid)
+ ```
  
 * **然后运行命令**：
 `adb shell am instrument -w com.netease.mail.oneduobaohydrid.test/android.test.InstrumentationTestRunner`
 然后就可以在真机看到运行的过程及结果：
 
- ![screenshot](https://raw.githubusercontent.com/hcnode/robotium-android-studio-handbook/master/screenshot/screenshot22.png)
+ ```bash
+ DawndeMacBook-Por:~ Dawn$ adb shell am instrument -w com.netease.mail.oneduobaohydrid.test/android.test.InstrumentationTestRunner
+ 
+ come.netease.qa.testdemo.ApplicationTest:
+ Test results for InstrumentationTestRunner=
+ Timer:42.91
+ 
+ OK (1 test)
+ ```
 
 ## 结合阿里云测平台进行脚本测试
 上面调试运行通过后，可以上传到阿里云测平台进行部分机器的自动化测试了哦：
